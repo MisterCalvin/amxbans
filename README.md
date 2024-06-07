@@ -7,7 +7,7 @@ An updated and Dockerized version of AMXBans with added quality of life features
 > [!IMPORTANT]  
 > If you intend to use an existing AMXBans database, you will need to import the new columns from [build/nginx/config/amxbans/amxbans_update.sql](build/nginx/config/amxbans/amxbans_update.sql) (be sure to create a backup of your database beforehand). Failure to do so will result in application errors when using certain pages. It is recommended you do a fresh install of AMXBans if you intend to use this version of the application.
 
-`git https://github.com/MisterCalvin/amxbans.git && cd ./amxbans && docker compose pull && docker compose up -d`
+`git clone https://github.com/MisterCalvin/amxbans.git && cd ./amxbans && docker compose pull && docker compose up -d`
 
 > [!NOTE]
 > You are not required to use the `amxbans-mariadb` container image in this repo if you have an existing MySQL database. This image is provided for convenience

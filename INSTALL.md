@@ -14,7 +14,7 @@
 
 Once installed, execute the following command to get up and running:
 
-`git https://github.com/MisterCalvin/amxbans.git && cd ./amxbans && docker compose pull && docker compose up -d`
+`git clone https://github.com/MisterCalvin/amxbans.git && cd ./amxbans && docker compose pull && docker compose up -d`
 
 > [!NOTE]
 > You are not required to use the `amxbans-mariadb` container image in this repo if you have an existing MySQL database. This image is provided for convenience
