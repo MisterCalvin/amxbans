@@ -75,7 +75,7 @@ COPY --chown=nobody config/amxbans_startup.sh /usr/bin/amxbans_startup.sh
 #COPY --chown=nobody config/amxbans/web/install/ /tmp/amxbans_install/install/
 
 # Expose the port nginx is reachable on
-EXPOSE 8080
+EXPOSE 80
 
 # Let supervisord start nginx & php-fpm
 CMD [ "/bin/bash", "/usr/bin/amxbans_startup.sh" ]
