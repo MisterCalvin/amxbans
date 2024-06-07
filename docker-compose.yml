@@ -28,8 +28,8 @@ services:
 
   amxbans-mariadb:
     image: ghcr.io/mistercalvin/amxbans-mariadb:latest
-    container_name: ${AMXBANS_DB_HOSTNAME} 
-    hostname: ${AMXBANS_DB_HOSTNAME} 
+    container_name: amxbans-mariadb 
+    hostname: amxbans-mariadb
     environment:
       TZ: "UTC"
       MYSQL_USER: "root"
