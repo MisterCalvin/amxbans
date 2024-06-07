@@ -1,0 +1,312 @@
+<div class="main">
+    <div class="post">
+        <table frame="box" rules="groups" summary="">
+            <thead>
+                <tr>
+                    <th style="width:150px;">{"_BANDETAILS"|lang}</th>
+                    <th class="_right">
+                        {if $ban_detail.bid != "62175"}
+                        <form method="POST" style="display:inline;">
+                            {if $smarty.session.bans_edit=="yes" || ($smarty.session.bans_edit=="own" && $smarty.session.uname == $ban_detail.username)}
+                            <img src="templates/{$design}_gfx/page_edit.png" border="0" onclick="NewToggleLayer('banedit_{$ban_detail.bid}')" title="{"_TIP_EDIT"|lang}" style="cursor:pointer;border:0;" />
+                            {/if}
+                            {if $smarty.session.bans_delete=="yes" || ($smarty.session.bans_delete=="own" && $smarty.session.uname == $ban_detail.username)}
+                            <input name="del_ban" type="image" src="templates/{$design}_gfx/page_delete.png" onclick="return confirm('{"_DELBAN"|lang}{"_DATALOSS"|lang}');" border="0" title="{"_TIP_DEL"|lang}" />
+                            <input type="hidden" name="site" value="{$site}" />
+                            <input type="hidden" name="bid" value="{$ban_detail.bid}" />
+                            <input type="hidden" name="details_x" value="1" />
+                            {/if}
+                        </form>
+                        {/if}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="fat">{"_NICKNAME"|lang}</td>
+                    <td>{$ban_detail.player_nick|default:"N/A"}</td>
+                </tr>
+                <tr>
+                    <td class="fat">{"_STEAMID"|lang}</td>
+                    <td>{$ban_detail.player_id|default:"N/A"}</td>
+                </tr>
+                <tr>
+                    <td class="fat">{"_STEAMCOMID"|lang}</td>
+                    <td>
+                        {if $ban_detail.player_id <> ""}
+                        <a target="_blank" href="http://steamcommunity.com/profiles/{$ban_detail.player_comid}">{$ban_detail.player_comid|default:"N/A"}</a>
+                        {else}
+                        {"_NOTAVAILABLE"|lang}
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fat">{"_IP"|lang}</td>
+                    <td>
+                        {if $smarty.session.ip_view=="yes"}
+                        {if $ban_detail.player_ip}
+                        {$ban_detail.player_ip|default:"N/A"}
+                        {else}
+                        <i>{"_NOTAVAILABLE"|lang}</i>
+                        {/if}
+                        {else}
+                        <span style='font-style:italic;font-weight:bold'>{"_HIDDEN"|lang}</span>
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fat">{"_BANTYPE"|lang}</td>
+                    <td>
+                        {if $ban_detail.ban_type=="S"}
+                        {"_STEAMID"|lang}
+                        {elseif $ban_detail.ban_type=="SI"}
+                        {"_STEAMID&IP"|lang}
+                        {else}
+                        {"_NOTAVAILABLE"|lang}
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fat">{"_REASON"|lang}</td>
+                    <td>
+                        {if $ban_detail.custom_reason != ''}
+                            {$ban_detail.custom_reason}
+                        {else}
+                            {$ban_detail.ban_reason|default:"N/A"}
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fat">{"_INVOKED"|lang}</td>
+                    <td>{$ban_detail.ban_created|default:"N/A"|date_format:"%d. %b %Y - %T"}</td>
+                </tr>
+                <tr>
+                    <td class="fat">{"_BANLENGHT"|lang}</td>
+                    <td>
+                        {if $ban_detail.ban_length==0}
+                        {"_PERMANENT"|lang}
+                        {elseif $ban_detail.ban_length==-1}
+                        {"_UNBANNED"|lang}
+                        {else}
+                        {($ban_detail.ban_length*60)|date2word:true} ({$ban_detail.ban_length} {"_MINS"|lang})
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fat">{"_EXPIRES"|lang}</td>
+                    <td>
+                        {if $ban_detail.ban_length <= 0}
+                        <i>{"_NOTAPPLICABLE"|lang}</i>
+                        {else}
+                        {$ban_detail.ban_end|default:"N/A"|date_format:"%d. %b %Y - %T"}
+                        {if $ban_detail.ban_end < $smarty.now}
+                        ({"_ALREADYEXP"|lang})
+                        {else}
+                        <i>({($ban_detail.ban_end-$smarty.now)|date2word} {"_REMAINING"|lang})</i>
+                        {/if}
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fat">{"_BANBY"|lang}</td>
+                    <td>{$ban_detail.admin_nick|default:"N/A"}{if $ban_detail.nickname} <i>({$ban_detail.nickname})</i>{/if}</td>
+                </tr>
+                <tr>
+                    <td class="fat">{"_ADMINID"|lang}</td>
+                    <td>
+                        {if $smarty.session.ip_view=="yes"}
+                        {if $ban_detail.admin_id}
+                        {$ban_detail.admin_id|default:"N/A"}
+                        {else}
+                        <i>{"_NOTAVAILABLE"|lang}</i>
+                        {/if}
+                        {else}
+                        <span style='font-style:italic;font-weight:bold'>{"_HIDDEN"|lang}</span>
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fat">{"_BANON"|lang}</td>
+                    <td>{if $ban_detail.server_name == "website"}{"_WEB"|lang}{else}{$ban_detail.server_name|default:"N/A"}{/if}</td>
+                </tr>
+                <tr>
+                    <td class="fat">{"_TRACKBACK"|lang}</td>
+                    <td><a id="trackback-link" href="//{$smarty.server.HTTP_HOST}{$smarty.server.PHP_SELF}?bid={$ban_detail.bid}">//{$smarty.server.HTTP_HOST}{$smarty.server.PHP_SELF}?bid={$ban_detail.bid}</a></td>
+                </tr>
+                <tr id="banedit_{$ban_detail.bid}" style="display:none;">
+                    {include file="layer_banedit.tpl"}
+                </tr>
+                {if $banedit_error!=""}<br /><div class="_center"><span class="error">{"_ERROR"|lang}: {foreach from=$banedit_error item=banedit_error_i}{$banedit_error_i|lang}{/foreach}</span></div><br />{/if}
+            </tbody>
+        </table>
+        <div class="clearer">&nbsp;</div>
+    </div>
+    {if $activ_count>0 || $exp_count>0}
+    <div class="post">
+        <div class="clearer">&nbsp;</div>
+        <table width="90%" cellspacing="0">
+            <tr class="htable" style="cursor:pointer;" onClick="NewToggleLayer('layer_banhistory');" class="list">
+                <td class="table_details_head" colspan="3"><b>{"_BANHISTORY"|lang} ({$activ_count+$exp_count})</b></td>
+            </tr>
+            <tr id="layer_banhistory" style="display: none">
+                {include file="layer_banhistory.tpl"}
+            </tr>
+        </table>
+    </div>
+    {/if}
+    {if $vars.use_demo == 1}
+    {if $upload_error!=""}<div class="_center"><span class="error">{"_ERROR"|lang}: {foreach from=$upload_error item=upload_error_i}{$upload_error_i|lang}{/foreach}</span></div><br />{/if}
+    {if $msg_demo}<div class="_center"><span class="success">{$msg_demo|lang}</span></div><br />{/if}
+    <div class="spacer">&nbsp;</div>
+    <div class="post">
+        <table frame="box" rules="groups" summary="">
+            <thead>
+                <tr>
+                    <th colspan="8">{"_BL_FILES"|lang}</th>
+                </tr>
+                <tr>
+                    <th style="width:130px;">{"_DATE"|lang}</th>
+                    <th style="width:100px;">{"_FILE"|lang}</th>
+                    <th style="width:50px;">{"_SIZE"|lang}</th>
+                    <th>{"_COMMENT"|lang}</th>
+                    <th style="width:100px;">{"_BY"|lang}</th>
+                    <th style="width:150px;">{"_IP"|lang}</th>
+                    <th style="width:20px;">{"_DOWNLOADS"|lang}</th>
+                    <th style="width:80px;">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                {foreach from=$demos item=demo}
+                <form method="post">
+                    <input type="hidden" name="bid" value="{$ban_detail.bid}" />
+                    <input type="hidden" name="site" value="{$site}" />
+                    <input type="hidden" name="did" value="{$demo.id}" />
+                    <input type="hidden" name="details_x" value="1" />
+                    <tr>
+                        <td>{$demo.upload_time|default:"N/A"|date_format:"%d. %b %Y - %T"}</td>
+                        <td>{$demo.demo_real|default:"N/A"}</td>
+                        <td>{$demo.file_size|default:"N/A"|file_size}</td>
+                        <td>{if $demo.comment}{$demo.comment|bbcode2html}{else}{"_NOCOMMENT"|lang}{/if}</td>
+                        <td>{$demo.name|default:"N/A"}</td>
+                        <td>{if $smarty.session.ip_view=="yes"}{$demo.addr|default:"N/A"}{/if}</td>
+                        <td class="_center">{$demo.down_count|default:"0"}</td>
+                        <td class="_right">
+                            <form method="POST" style="display:inline;">
+                                <a href="mailto:{$demo.email}"><img src="images/email_go.png" border="0" title="{"_TIP_SENDMAIL"|lang}" /></a>
+                                <input name="down_demo" type="image" src="images/disk.png" border="0" title="{"_TIP_DOWNLOAD"|lang}" />
+                                {if $smarty.session.bans_edit=="yes" || ($smarty.session.bans_edit=="own" && $smarty.session.uname == $demo.name)}
+                                <img src="images/page_edit.png" border="0" onClick="NewToggleLayer('demedit_{$demo.id}');" title="{"_TIP_EDIT"|lang}" style="cursor:pointer;" />
+                                {/if}
+                                {if $smarty.session.bans_delete=="yes" || ($smarty.session.bans_delete=="own" && $smarty.session.uname == $demo.name)}
+                                <input name="del_demo" type="image" src="templates/{$design}_gfx/page_delete.png" border="0" onclick="return confirm('{"_DELDEMO"|lang}{"_DATALOSS"|lang}');" title="{"_TIP_DEL"|lang}" />
+                                {/if}
+                                <input type="hidden" name="site" value="{$site}" />
+                                <input type="hidden" name="bid" value="{$ban_detail.bid}" />
+                                <input type="hidden" name="details_x" value="1" />
+                            </form>
+                        </td>
+                    </tr>
+                    <tr id="demedit_{$demo.id}" style="display: none">
+                        {include file="layer_demedit.tpl"}
+                    </tr>
+                </form>
+                {foreachelse}
+                <td class="_center" colspan="8">{"_NOFILES"|lang}</td>
+                {/foreach}
+            </tbody>
+        </table>
+        <div class="clearer">&nbsp;</div>
+    </div>
+    {if $vars.comment_all=="1" || $smarty.session.loggedin == "true"}
+    <div class="post _center">
+        <form method="post" action="">
+            <input type="button" class="button" name="newfile" value="{"_NEWFILE"|lang}" onclick="$('#add_file').slideToggle('slow');"/><br/><br/>
+        </form>
+    </div>
+    <div id="add_file" class="post" style="display:none;">
+        {include file="layer_demadd.tpl"}
+    </div>
+    {/if}
+    {/if}
+    {if $vars.use_comment == 1}
+    {if $comment_error!=""}<div class="_center"><span class="error">{"_ERROR"|lang}: {foreach from=$comment_error item=comment_error_i}{$comment_error_i|lang}{/foreach}</span></div><br />{/if}
+    {if $msg_comment}<div class="_center"><span class="success">{$msg_comment|lang}</span></div><br />{/if}
+    <div class="spacer">&nbsp;</div>
+    <div class="post">
+        <table frame="box" rules="groups">
+            <thead>
+                <tr>
+                    <th colspan="5">{"_BL_COMMENTS"|lang}</th>
+                </tr>
+                <tr>
+                    <th style="width:130px;">{"_DATE"|lang}</th>
+                    <th>{"_COMMENT"|lang}</th>
+                    <th style="width:100px;">{"_BY"|lang}</th>
+                    <th style="width:150px;">{"_IP"|lang}</th>
+                    <th style="width:80px;">&nbsp;</th>
+                </tr>
+            </thead>
+        </table>
+        {foreach from=$comments item=comment}
+        <form method="POST">
+            <input type="hidden" name="bid" value="{$ban_detail.bid}" />
+            <input type="hidden" name="site" value="{$site}" />
+            <input type="hidden" name="cid" value="{$comment.id}" />
+            <input type="hidden" name="details_x" value="1" />
+            <table frame="box" rules="groups" summary="">
+                <tbody>
+                    <tr>
+                        <td style="width:130px;">{$comment.date|default:"N/A"|date_format:"%d. %b %Y - %T"}</td>
+                        <td>{$comment.comment|bbcode2html|default:"N/A"}</td>
+                        <td style="width:100px;">{$comment.name|default:"N/A"}</td>
+                        <td style="width:150px;">{if $smarty.session.ip_view=="yes"}{$comment.addr|default:"N/A"}{else}<span style='font-style:italic;font-weight:bold'>{"_HIDDEN"|lang}</span>{/if}</td>
+                        <td class="_right" style="width:80px;">
+                            {if $smarty.session.bans_edit=="yes"}
+                            <img src="images/page_edit.png" title="{"_EDIT"|lang}" border="0" style="cursor:pointer;" onClick="NewToggleLayer('comedit_{$comment.id}');" />
+                            <input name="del_comment" type="image" src="templates/{$design}_gfx/page_delete.png" border="0" onclick="return confirm('{"_DELCOMMENT"|lang}{"_DATALOSS"|lang}');" title="{"_DELETE"|lang}" />
+                            {/if}
+                        </td>
+                    </tr>
+                    <tr id="comedit_{$comment.id}" style="display: none">
+                        {include file="layer_comedit.tpl"}
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+        {foreachelse}
+        <div class="_center">{"_NOCOMMENTS"|lang}</div>
+        {/foreach}
+        <div class="clearer">&nbsp;</div>
+    </div>
+    {if $vars.comment_all=="1" || $smarty.session.loggedin == "true"}
+    <div class="post _center">
+        <form method="post" action="">
+            <input type="button" class="button" name="newcomment" value="{"_NEWCOMMENT"|lang}" onclick="$('#add_comment').slideToggle('slow');"/><br/><br/>
+        </form>
+    </div>
+    <div id="add_comment" class="post" style="display:none;">
+        <tr id="comadd_{$ban_detail.bid}" {if $comment_layer!="1"}style="display: none"{/if}>
+            {include file="layer_comadd.tpl"}
+        </tr>
+    </div>
+    {/if}
+    {/if}
+    <div class="clearer">&nbsp;</div>
+</div>
+
+{literal}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const scheme = window.location.protocol + "//";
+        const host = window.location.host;
+        const path = "{/literal}{$smarty.server.PHP_SELF}{literal}";
+        const query = "?bid={/literal}{$ban_detail.bid}{literal}";
+
+        const trackbackLink = document.getElementById('trackback-link');
+        const fullUrl = scheme + host + path + query;
+
+        trackbackLink.href = fullUrl;
+        trackbackLink.textContent = fullUrl;
+    });
+</script>
+{/literal}

@@ -1,0 +1,49 @@
+services:
+  amxbans-nginx:
+    image: ghcr.io/mistercalvin/amxbans-nginx:latest
+    container_name: amxbans-nginx
+    hostname: amxbans-nginx
+    environment:
+      TZ: "UTC"
+      INSTALL: "True" # Set to "False" after successful install
+      
+      # All of the variables below are optional and can be removed after a successful install
+      # They can be omitted entirely if you wish to input this information manually during your first install
+      ADMIN_USER: "root"
+      ADMIN_PASS: "password" # Minimum 4 characters
+      ADMIN_EMAIL: "root@email.com"
+      URL_PATH: "amxbans.mydomain.com"
+      DB_HOST: "amxbans-mariadb"
+      DB_USER: "root"
+      DB_PASS: "password"
+      DB: "amxbans"
+      DB_PREFIX: "amx_"
+    volumes:
+      - amxbans_web:/var/www/html
+    ports:
+      - 80:80
+    depends_on:
+      - amxbans-mariadb
+    restart: unless-stopped
+
+  amxbans-mariadb:
+    image: ghcr.io/mistercalvin/amxbans-mariadb:latest
+    container_name: ${AMXBANS_DB_HOSTNAME} 
+    hostname: ${AMXBANS_DB_HOSTNAME} 
+    environment:
+      TZ: "UTC"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "password"
+      MYSQL_ROOT_PASSWORD: "rootpassword"
+      MYSQL_DATABASE: "amxbans"
+    volumes:
+      - amxbans_db:/var/lib/mysql
+    ports:
+      - 3306:3306
+    restart: unless-stopped
+
+volumes:
+  amxbans_web:
+    name: amxbans_web
+  amxbans_db:
+    name: amxbans_db
