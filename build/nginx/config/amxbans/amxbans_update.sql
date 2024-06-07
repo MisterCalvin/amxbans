@@ -1,4 +1,4 @@
-ALTER TABLE `amxbans_serverinfo` 
+ALTER TABLE `amx_serverinfo` 
 ADD COLUMN IF NOT EXISTS `timeout` INT NOT NULL DEFAULT 3;
 
 ALTER TABLE `amx_reasons` 
