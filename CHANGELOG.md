@@ -75,7 +75,7 @@ define("_TESTEMAILRECIPIENT", "Test Email Recipient");
 If you are updating an old installation to this version of AMXBans, you will need to add the following columns to your database:
 
 ```
-ALTER TABLE `amxbans_serverinfo` ADD COLUMN timeout INT NOT NULL DEFAULT 3;
+ALTER TABLE `amx_serverinfo` ADD COLUMN timeout INT NOT NULL DEFAULT 3;
 ALTER TABLE `amx_reasons` ADD COLUMN `pos` INT NOT NULL DEFAULT 0;
 
 ALTER TABLE `amx_webconfig`
