@@ -39,7 +39,7 @@ else
 
 	# Remove install files if they still exist
 	if [ -f "/var/www/html/setup.php" ]; then
-	    mv "/var/www/html/setup.php"
+	    rm "/var/www/html/setup.php"
 	fi
 	
 	if [ -d "/var/www/html/install" ]; then
