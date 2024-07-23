@@ -34,7 +34,7 @@ dae78330ae47   amxbans-nginx:latest             "/bin/bash /usr/bin/…"   About
 - Exec into container: `docker exec -it --user nobody amxbans-nginx bash`
 
 #### Adding icons for custom mods
-When adding a GoldSrc server running a custom mod (or an official game which may not have an icon included in AMXBans), you may notice the icon is missing. To add a custom game icon your file must be 16 x 16 .gif file, and it must be named after the mod directory (e.g., for Opposing Force the directory is named `gearbox`, so your icon would be named `gearbox.gif`). Once you have your file ready, you need to copy it inside the container in two separate places. Below we will use Opposing Force (`gearbox`) as an example:
+When adding a GoldSrc server running a custom mod (or an official game which may not have an icon included in AMXBans), you may notice the icon is missing. To add a custom game icon your file must be a 16 x 16 .gif file, and it must be named after the mod directory (e.g., for Opposing Force the directory is named `gearbox`, so your icon would be named `gearbox.gif`). Once you have your file ready, you need to copy it inside the container in two separate places. Below we will use Opposing Force (`gearbox`) as an example:
 
 ```
 docker cp ./gearbox.gif amxbans-nginx:/var/www/html/images/mods/gearbox.gif &&
