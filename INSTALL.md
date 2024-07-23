@@ -24,15 +24,31 @@ Your web and database container should both be online within a few seconds, you 
 ```
 user@amxbans-docker:~/amxbans$ docker ps
 CONTAINER ID   IMAGE                                COMMAND                  CREATED             STATUS                         PORTS                                         NAMES
-dae78330ae47   amxbans-nginx:latest             "/bin/bash /usr/bin/…"   About a minute ago   Up About a minute (healthy)   0.0.0.0:80->80/tcp, :::80->80/tcp, 8080/tcp   amxbans
+dae78330ae47   amxbans-nginx:latest             "/bin/bash /usr/bin/…"   About a minute ago   Up About a minute (healthy)   0.0.0.0:80->80/tcp, :::80->80/tcp, 8080/tcp   amxbans-nginx
 4308f93efde5   amxbans-mariadb:latest           "/run.sh"                About a minute ago   Up About a minute (healthy)     0.0.0.0:3306->3306/tcp, :::3306->3306/tcp     amxbans-db
 ```
 
 ### Useful Docker commands
 
-- Check your container logs: `docker logs -f <your_container_name>`
-- Copy files in or out of a container (e.g. adding new mod images, or replacing the `plugins/` with pre-built files): `docker cp ./desert_crisis.gif amxbans-nginx:/var/www/html/images/mods/dcrisis.gif`
-- Exec into container: `docker exec -it --user nobody <your_container_name> bash`
+- Check your container logs: `docker logs -f amxbans-nginx`
+- Exec into container: `docker exec -it --user nobody amxbans-nginx bash`
+
+#### Adding icons for custom mods
+When adding a GoldSrc server running a custom mod (or an official game which may not have an icon included in AMXBans), you may notice the icon is missing. To add a custom game icon your file must be 16 x 16 .gif file, and it must be named after the mod directory (e.g., for Opposing Force the directory is named `gearbox`, so your icon would be named `gearbox.gif`). Once you have your file ready, you need to copy it inside the container in two separate places. Below we will use Opposing Force (`gearbox`) as an example:
+
+```
+docker cp ./gearbox.gif amxbans-nginx:/var/www/html/images/mods/gearbox.gif &&
+docker cp ./gearbox.gif amxbans-nginx:/var/www/html/templates/_gfx/games/gearbox.gif &&
+docker exec -it --user root amxbans-nginx chown nobody:nobody /var/www/html/images/mods/gearbox.gif &&
+docker exec -it --user root amxbans-nginx chown nobody:nobody /var/www/html/templates/_gfx/games/gearbox.gif
+```
+
+You also need to create a directory matching your newly added custom mod to `images/maps/<mod_name>` and copy `noimage.jpg` from your `templates/_gfx` directory into it (otherwise the "No Map Image" placeholder on the main `Server` page will be broken). Again, we will use Opposing Foce (`gearbox`) for our example commands:
+
+```
+docker exec -it --user nobody amxbans-nginx mkdir /var/www/html/images/maps/gearbox &&
+docker exec -it --user nobody amxbans-nginx cp /var/www/html/templates/_gfx/maps/noimage.jpg /var/www/html/images/maps/gearbox/noimage.jpg
+```
 
 ## Manual Install
 AMXBans requires a web server, PHP (the required PHP modules will be listed below), and a MySQL database. At the time of writing the application has been tested with: `NGINX 1.24.0`, `PHP 8.3.7`, and `MariaDB 8.3.7`. Copy [build/nginx/config/amxbans/web/](build/nginx/config/amxbans/web/) to your web server. Create a directory named `templates_c/` in your AMXBans web root, and ensure it has adequate write permissions for the user you are running your web server as. Next, navigate to `<Your-WebServer-IP>:<Your-WebServer-Port>` and complete the install process. After completing the install process, ensure the `install/` directory and `setup.php` have been deleted from the root directory (the application should do this for you automatically, but double-check). If you are having any issues with certain parts of the application (specifically, exporting bans or SQL backups) ensure the `include/files/`, and `include/backup/` directories has proper write permissions for your web server user.
