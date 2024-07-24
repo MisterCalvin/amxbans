@@ -47,7 +47,7 @@ You also need to create a directory matching your newly added custom mod to `ima
 
 ```
 docker exec -it --user nobody amxbans-nginx mkdir /var/www/html/images/maps/gearbox &&
-docker exec -it --user nobody amxbans-nginx cp /var/www/html/templates/_gfx/maps/noimage.jpg /var/www/html/images/maps/gearbox/noimage.jpg
+docker exec -it --user nobody amxbans-nginx cp /var/www/html/images/maps/valve/noimage.jpg /var/www/html/images/maps/gearbox/noimage.jpg
 ```
 
 ## Manual Install
